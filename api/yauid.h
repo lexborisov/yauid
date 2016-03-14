@@ -24,6 +24,7 @@ extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
 #include <inttypes.h>
 #include <time.h>
 #include <sys/file.h>
@@ -82,14 +83,15 @@ enum yauid_status {
     YAUID_ERROR_WRITE_KEY,
     YAUID_ERROR_FLUSH_KEY,
     YAUID_ERROR_TRY_COUNT_KEY,
-    YAUID_ERROR_CREATE_OBJECT
+    YAUID_ERROR_CREATE_OBJECT,
+    YAUID_ERROR_ALLOC_KEY_FILE
 }
 typedef yauid_status_t;
 
 // base structure
 struct yauid {
     int           i_lockfile;
-    const char*   c_lockfile;
+    char*         c_lockfile;
     FILE*         h_lockfile;
     unsigned long node_id;
     

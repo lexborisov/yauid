@@ -234,12 +234,24 @@ yauid * yauid_init(const char *filepath_key, const char *filepath_node_id)
     {
         yaobj->node_id    = 0;
         yaobj->error      = YAUID_OK;
-        yaobj->c_lockfile = filepath_key;
         yaobj->i_lockfile = 0;
         yaobj->h_lockfile = NULL;
         yaobj->try_count  = 0;
         yaobj->sleep_usec = (useconds_t)(35000L);
         yaobj->ext_value  = 0;
+        
+        if(filepath_key == NULL)
+        {
+            yaobj->error = YAUID_ERROR_CREATE_KEY_FILE;
+            return yaobj;
+        }
+        
+        yaobj->c_lockfile = strdup(filepath_key);
+        if(yaobj->c_lockfile == NULL)
+        {
+            yaobj->error = YAUID_ERROR_ALLOC_KEY_FILE;
+            return yaobj;
+        }
         
         if(filepath_node_id != NULL)
         {
@@ -330,6 +342,8 @@ void yauid_destroy(yauid* yaobj)
     
     if(yaobj->h_lockfile)
         fclose(yaobj->h_lockfile);
+    if(yaobj->c_lockfile)
+        free(yaobj->c_lockfile);
     
     free(yaobj);
 }

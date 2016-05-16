@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2014 Alexander Borisov
+ Copyright (c) 2014-2016 Alexander Borisov
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -230,6 +230,18 @@ unsigned long long int yauid_get_max_timestamp();
  * @return timestamp
  */
 time_t yauid_datetime_to_timestamp(const char *datetime);
+
+/**
+ * Get YAUID by timestamp
+ *
+ * @param[in] timestamp like a 1405124592
+ * @param[in] node id; > 0 and <= NUMBER_LIMIT_NODE
+ * @param[in] increment counter; >= 0 and <= NUMBER_LIMIT
+ *
+ * @return unique key if successful or 0 if limits are exceeded
+ */
+hkey_t
+yauid_get_key_by_timestamp(time_t timestamp, size_t node_id, size_t counter);
 
 /**
  * Get minimum and maximum key from date and node id by timestamp

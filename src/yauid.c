@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2014 Alexander Borisov
+ Copyright (c) 2014-2016 Alexander Borisov
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -391,6 +391,24 @@ time_t yauid_datetime_to_timestamp(const char *datetime)
         epoch = (time_t)(0);
     
     return epoch;
+}
+
+hkey_t yauid_get_key_by_timestamp(time_t timestamp, size_t node_id, size_t counter)
+{
+    if(counter > NUMBER_LIMIT)
+        return 0;
+    if(node_id > NUMBER_LIMIT_NODE)
+        return 0;
+    if(timestamp > NUMBER_LIMIT_TIMESTAMP)
+        return 0;
+    
+    hkey_t hkey = (size_t)timestamp;
+    hkey <<= BIT_LIMIT_NODE;
+    hkey |= node_id;
+    hkey <<= BIT_LIMIT_INC;
+    hkey |= counter;
+    
+    return hkey;
 }
 
 void yauid_get_period_key_by_datetime(const char *from_datetime,

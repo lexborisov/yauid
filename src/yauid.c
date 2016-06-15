@@ -137,6 +137,8 @@ hkey_t yauid_get_key_once(yauid* yaobj)
     
     if(fseek(yaobj->h_lockfile, 0, SEEK_SET) != 0)
     {
+        flock(yaobj->i_lockfile, LOCK_UN);
+        
         yaobj->error = YAUID_ERROR_FILE_SEEK;
         return (hkey_t)(0);
     }
@@ -145,6 +147,8 @@ hkey_t yauid_get_key_once(yauid* yaobj)
     {
         if(fseek(yaobj->h_lockfile, 0L, SEEK_END) != 0)
         {
+            flock(yaobj->i_lockfile, LOCK_UN);
+            
             yaobj->error = YAUID_ERROR_FILE_SEEK;
             return (hkey_t)(0);
         }
@@ -152,12 +156,16 @@ hkey_t yauid_get_key_once(yauid* yaobj)
         long h_size = ftell(yaobj->h_lockfile);
         if(h_size > 0)
         {
+            flock(yaobj->i_lockfile, LOCK_UN);
+            
             yaobj->error = YAUID_ERROR_READ_KEY;
             return (hkey_t)(0);
         }
         
         if(fseek(yaobj->h_lockfile, 0, SEEK_SET) != 0)
         {
+            flock(yaobj->i_lockfile, LOCK_UN);
+            
             yaobj->error = YAUID_ERROR_FILE_SEEK;
             return (hkey_t)(0);
         }
@@ -199,18 +207,24 @@ hkey_t yauid_get_key_once(yauid* yaobj)
     
     if(fseek(yaobj->h_lockfile, 0, SEEK_SET) != 0)
     {
+        flock(yaobj->i_lockfile, LOCK_UN);
+        
         yaobj->error = YAUID_ERROR_FILE_SEEK;
         return (hkey_t)(0);
     }
     
     if(fwrite((const void *)(&key), sizeof(hkey_t), 1, yaobj->h_lockfile) != 1)
     {
+        flock(yaobj->i_lockfile, LOCK_UN);
+        
         yaobj->error = YAUID_ERROR_WRITE_KEY;
         return (hkey_t)(0);
     }
     
     if(fflush(yaobj->h_lockfile) != 0)
     {
+        flock(yaobj->i_lockfile, LOCK_UN);
+        
         yaobj->error = YAUID_ERROR_FLUSH_KEY;
         return (hkey_t)(0);
     }
